@@ -1,3 +1,4 @@
+from shared.model import DenseKANRBF, build_transformer_model
 # ------------------------------------------------------------------------------
 # 3) Regression Pipeline (uses train.csv and test.csv)
 # ------------------------------------------------------------------------------
