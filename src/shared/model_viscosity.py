@@ -2,10 +2,30 @@
 Shared model components for every viscosity panel.
 Pulled verbatim from the first script so we only keep them ONCE.
 """
-
+import os
+import random
+import argparse
 import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow.keras import layers, models, regularizers
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+from sklearn.model_selection import KFold
+from sklearn.preprocessing import QuantileTransformer, LabelEncoder, PowerTransformer, MinMaxScaler, StandardScaler, RobustScaler
+from tensorflow.keras.utils import to_categorical
+from sklearn.metrics import (
+    r2_score, mean_squared_error, mean_absolute_error,
+    confusion_matrix, ConfusionMatrixDisplay
+)
+from scipy.stats import spearmanr
+from sklearn.inspection import permutation_importance
+from verstack.stratified_continuous_split import scsplit
+import ImbalancedLearningRegression as iblr
+from tfkan.layers import DenseKAN
+import shap
+from scipy.io import savemat
+from sklearn.base import BaseEstimator, RegressorMixin
 
 # ------------------------------------------------------------------
 # 1)  DenseKANRBF   (identical in every original script)
