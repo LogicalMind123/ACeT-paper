@@ -24,7 +24,7 @@ from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor
 from scipy.io import savemat
 
-from shared.model import DenseKANRBF, build_transformer_model
+from viscosity.model import DenseKANRBF, build_transformer_model
 
 
 # ------------------------------------------------------------------------------
