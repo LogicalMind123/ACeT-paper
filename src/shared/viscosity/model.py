@@ -123,7 +123,7 @@ def build_transformer_model(
          x = layers.Concatenate(name='interaction_features')(pairs)  # (batch, num_feats*(num_feats-1)/2)
          x = layers.Dense(64, activation='gelu', kernel_regularizer=regularizers.l2(l2_reg), name='interaction_dense')(x)
     else:
-        raise ValueError("head_type must be 'mlp' or 'rbf' or 'poly' or 'kan' or 'interaction'")
+        raise ValueError("head_type must be 'mlp' or 'rbf' or 'spline' or 'kan' or 'interaction'")
     # ---- Output layer ----------------------------------------------------------------
     outputs = layers.Dense(1 if task == 'regression' else num_classes,
                            activation='linear' if task == 'regression' else 'softmax')(x)
