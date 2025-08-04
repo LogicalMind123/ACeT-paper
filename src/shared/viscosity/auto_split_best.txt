@@ -1,0 +1,162 @@
+#!/usr/bin/env python3
+"""
+auto_split_best.py
+
+Automatically finds the best composite stratified splitting parameters (n_clusters, n_bins)
+for a given random seed and writes out train/test CSVs.
+The PCA + clustering steps are implemented in the `composite_stratified_split` function
+within `antibody_splits.py`. See that file for the detailed PCA (n_components) and KMeans logic.
+
+Usage example: 
+python auto_split_best.py --data-csv antibodies.csv --target-col Viscosity --seed 0 --clusters 3 5 8 --bins 3 4 5  --test-size 0.3 --out-prefix antibodies_best
+
+python auto_split_best.py --data-csv clearance_imputed.csv --target-col AUCt --seed 0 --clusters 7 8 9 --bins 1 2  --test-size 0.2 --out-prefix clearance_best
+
+python auto_split_best.py --data-csv clearance_imputed.csv --target-col AUCt --seed 0 --clusters 3 4 5 --bins 3 4 5  --test-size 0.2 --out-prefix clearance_best
+
+python auto_split_best.txt --data-csv clearance_mice_imputed.csv --target-col AUCt --seed 0 --clusters 3 4 5 6 7  --bins 1 2  --test-size 0.2 --out-prefix clearance_best
+Seed 0: best n_clusters=3, n_bins=2 (OOD rate=0.0000, mean NN dist=0.4973)
+
+python auto_split_best.py --data-csv clearance_mice.csv --target-col AUCt --seed 1 --clusters 3 4 5 6 7  --bins 1 2  --test-size 0.2 --out-prefix clearance_best
+Seed 1: best n_clusters=7, n_bins=2 (OOD rate=0.0000, mean NN dist=0.4729)
+
+python auto_split_best.py --data-csv clearance_mice.csv --target-col AUCt --seed 2 --clusters 3 4 5 6 7  --bins 1 2  --test-size 0.2 --out-prefix clearance_best
+Seed 2: best n_clusters=4, n_bins=1 (OOD rate=0.0000, mean NN dist=0.4409)
+
+python auto_split_best.py --data-csv mouse2_imputed_reuploaded.csv --target-col AUCt --seed 0 --clusters 3 4 5 6 7  --bins 1 2  --test-size 0.2 --out-prefix clearance_best
+
+python auto_split_best.py --data-csv clearance_best_train1.csv --target-col AUCt --seed 0 --clusters 3 4 5  --bins 1 2   --test-size 0.2 --out-prefix clearance_best
+
+python auto_split_best.txt --data-csv clearance_mice_imputed.csv --target-col AUCt --seed 0 --clusters 3 4 5 6 7  --bins 1 2  --test-size 0.2 --out-prefix clearance_best
+
+python auto_split_best.txt --data-csv antibodies.csv --target-col Viscosity --seed 1 --clusters 3 4 5 6 7 8 --bins 1 2 3 4 5  --test-size 0.3 --out-prefix antibodies_best
+
+python auto_split_best.txt --data-csv KBDATA.csv --target-col viscosity (cP) --seed 0 --clusters 3 4 5 6 7 8 --bins 1 2 3 4 5  --test-size 0.2 --out-prefix antibodies_best
+
+
+"""
+import argparse
+import numpy as np
+import pandas as pd
+#from verstack.stratified_continuous_split import scsplit
+
+#train1, test1 = scsplit(df, test_size=0.30, train_size=0.70, stratify=data[target_col])
+
+# Composite split and coverage utilities:
+from antibody_splits import composite_stratified_split, coverage_analysis
+
+# For reference, PCA and clustering are internally used by composite_stratified_split:
+from sklearn.decomposition import PCA  # n_components = min(5, n_features)
+from sklearn.cluster import KMeans  # n_clusters as provided in args
+
+def find_best_params(X, y, seed, cluster_list, bin_list, test_size):
+    """
+    For a fixed seed, loops over all combinations of n_clusters and n_bins,
+    computes the OOD (out-of-distribution) rate and mean NN distance,
+    and returns the parameters yielding the lowest OOD rate (tie-break by mean distance).
+
+    Note: PCA(n_components=min(5, X.shape[1])) + KMeans(n_clusters) are invoked
+    inside composite_stratified_split to form the feature clusters.
+    """
+    best = None
+    for n_clusters in cluster_list:
+        for n_bins in bin_list:
+            # perform stratified split with clustering + quantile bins
+            tr_idx, te_idx, _, _ = composite_stratified_split(
+                X, y,
+                test_size=test_size,
+                n_clusters=n_clusters,
+                n_bins=n_bins,
+                seed=seed
+            )
+            # evaluate train→test coverage via nearest-neighbor distances
+            d_te, _, ood = coverage_analysis(
+                X[tr_idx],
+                X[te_idx]
+            )
+            ood_rate = ood.mean()
+            mean_dist = d_te.mean()
+            # choose lowest OOD; tie-break by mean distance
+            if best is None or (ood_rate, mean_dist) < (best['ood'], best['mean_dist']):
+                best = {
+                    'n_clusters': n_clusters,
+                    'n_bins':     n_bins,
+                    'ood':        ood_rate,
+                    'mean_dist':  mean_dist
+                }
+    return best
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Automatically split data with optimal stratified clustering/binning"
+    )
+    parser.add_argument(
+        "--data-csv", required=True,
+        help="Path to the full dataset CSV file"
+    )
+    parser.add_argument(
+        "--target-col", required=True,
+        help="Name of the target column in the CSV"
+    )
+    parser.add_argument(
+        "--seed", type=int, default=None,
+        help="Random seed (if not provided, a seed is chosen randomly)"
+    )
+    parser.add_argument(
+        "--clusters", nargs='+', type=int, default=[3,5,8],
+        help="List of n_clusters values to try"
+    )
+    parser.add_argument(
+        "--bins", nargs='+', type=int, default=[3,4,6],
+        help="List of n_bins values to try"
+    )
+    parser.add_argument(
+        "--test-size", type=float, default=0.3,
+        help="Fraction of data to reserve for the test set"
+    )
+    parser.add_argument(
+        "--out-prefix", default="split",
+        help="Prefix for output files: <prefix>_train.csv, <prefix>_test.csv"
+    )
+    args = parser.parse_args()
+
+    # choose or randomize seed
+    seed = args.seed if args.seed is not None else int(np.random.randint(0, 1_000_000))
+    np.random.seed(seed)
+
+    # load dataset
+    df = pd.read_csv(args.data_csv)
+    if args.target_col not in df.columns:
+        raise ValueError(f"Target column '{args.target_col}' not found in CSV")
+    X = df.drop(columns=[args.target_col]).values
+    y = df[args.target_col].values
+
+    # find best (n_clusters, n_bins) for this seed
+    best = find_best_params(
+        X, y, seed,
+        cluster_list=args.clusters,
+        bin_list=args.bins,
+        test_size=args.test_size
+    )
+    print(
+        f"Seed {seed}: best n_clusters={best['n_clusters']},"
+        f" n_bins={best['n_bins']} (OOD rate={best['ood']:.4f},"
+        f" mean NN dist={best['mean_dist']:.4f})"
+    )
+
+    # generate final split with best parameters
+    tr_idx, te_idx, _, _ = composite_stratified_split(
+        X, y,
+        test_size=args.test_size,
+        n_clusters=best['n_clusters'],
+        n_bins=best['n_bins'],
+        seed=seed
+    )
+
+    # write train/test CSVs
+    train_path = f"{args.out_prefix}_train.csv"
+    test_path  = f"{args.out_prefix}_test.csv"
+    df.iloc[tr_idx].to_csv(train_path, index=False)
+    df.iloc[te_idx].to_csv(test_path,  index=False)
+
+    print(f"Wrote train set to '{train_path}' and test set to '{test_path}'")
