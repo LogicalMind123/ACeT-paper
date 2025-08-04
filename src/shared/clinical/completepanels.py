@@ -38,9 +38,9 @@ import scipy.io as sio
 from scipy.cluster.hierarchy import linkage, fcluster, dendrogram
 import seaborn as sns            # only used for pretty correlation heat‑map
 from typing import Dict
-from clinical.model import DenseKANRBF, build_transformer_model
+
 # ──────────────────────────────────────────────────────────────────────────────
-# 0. Jain‑et‑al. 2017 warning‑flag thresholds           
+# 0.  Jain‑et‑al. 2017 warning‑flag thresholds            
 # ──────────────────────────────────────────────────────────────────────────────
 JAIN_THRESH: Dict[str, Dict[str, float]] = {
     "PSR":        {">": 0.27},
@@ -74,7 +74,7 @@ def build_flags(df: pd.DataFrame) -> pd.DataFrame:
     return flags
 
 # ──────────────────────────────────────────────────────────────────────────────
-# 1.   Threshold‑helper utilities
+# 1.  **NEW**  Threshold‑helper utilities
 # ──────────────────────────────────────────────────────────────────────────────
 def youden_univariate_thresholds(X: pd.DataFrame,
                                  y: np.ndarray) -> pd.DataFrame:
@@ -162,9 +162,8 @@ def predict_and_cm(models, X, y_true):
     cm    = confusion_matrix(y_true, preds)
     return bacc, cm, preds, probs
 
-
 # ------------------------------------------------------------------------------
-# ------------------ Classification Pipeline ------------------
+# ------------------ Updated Classification Pipeline ------------------
 def run_classification(args):
     print("=== Running Classification with Data‑driven Thresholds ===")
     data = pd.read_csv(args.train_file)
@@ -209,11 +208,12 @@ def run_classification(args):
     num_features = X_train_scaled.shape[1]
 
     heads = [args.head_type] if args.head_type != 'all' else [
-        'mlp','rbf','poly','kan','interaction'
+        'mlp','rbf','spline','kan','interaction'
     ]
 
+    best_models = None
     best_head = None
-    best_test_bacc = -1.0
+    best_cv_bacc  = -1.0
 
     for head in heads:
         random.seed(args.seed)
@@ -344,9 +344,12 @@ def run_classification(args):
         plt.close()
 
         # Track best
-        if test_bacc > best_test_bacc:
-            best_test_bacc = test_bacc
-            best_head = head
+        if mean_bacc > best_cv_bacc:
+            best_cv_bacc = mean_bacc
+            best_head    = head
+            best_models  = list(ensemble_models)
+
+    print(f"\n*** Best head by CV: {best_head.upper()} (CV BA = {best_cv_bacc:.4f}) ***")
 
     # ─────────────────  EXTERNAL OUT‑OF‑TIME VALIDATION  ──────────────────
     if args.external_file:
@@ -365,7 +368,7 @@ def run_classification(args):
             y_ext  = encoder.transform(ext_df[args.status_col].values)
 
             ext_bacc, cm_ext, ext_preds, ext_probs = predict_and_cm(
-                ensemble_models, X_ext, y_ext
+                best_models, X_ext, y_ext
             )
             print(f"External balanced accuracy = {ext_bacc:.4f}")
             print("External confusion matrix:\n", cm_ext)
@@ -741,10 +744,10 @@ def parse_args():
     p.add_argument('--task', choices=['regression','classification'], required=True)
     p.add_argument('--train_file', required=True,
                    help='Path to full dataset CSV file (we’ll split it internally)')
-    p.add_argument('--test_size', type=float, default=0.2,
+    p.add_argument('--test_size', type=float, default=0.0,
                    help='Fraction of the data to reserve for test (classification only)')
     p.add_argument('--head_type',
-                   choices=['mlp','rbf','poly','kan','interaction','all'],
+                   choices=['mlp','rbf','spline','kan','interaction','all'],
                    default='mlp')
     p.add_argument('--seed', type=int, default=0)
     p.add_argument('--n_splits', type=int, default=5)
