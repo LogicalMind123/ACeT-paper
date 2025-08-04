@@ -112,10 +112,23 @@ def build_transformer_model(
         )(x)
         x = layers.GaussianDropout(dropout_rate)(x)
         
-    elif head_type=='poly':
-        square = layers.Lambda(lambda z: tf.square(z))(inputs)
-        x = layers.Concatenate()([inputs, square])
-        x = layers.Dense(64, activation='gelu', kernel_regularizer=regularizers.l2(l2_reg))(x)
+    elif head_type == 'spline':
+        # Cubic spline head with fixed knots at -1,0,1
+        def spline_basis(z):
+            # z: (batch, num_features)
+            knots = tf.constant([-1.0, 0.0, 1.0], dtype=z.dtype)        # shape (5,)
+            # expand to (batch, num_features, 1), subtract gives (batch, num_features, 3)
+            diff = tf.nn.relu(tf.expand_dims(z, -1) - knots)
+            # cubic basis
+            return tf.pow(diff, 3)                                      # (batch, num_features, 3)
+
+        # apply Lambda to get shape (batch, num_features, 3)
+        x = layers.Lambda(spline_basis)(inputs)
+        # now reshape to (batch, num_features * 3) so Dense can infer its input size
+        num_features = inputs.shape[-1]                                 # static integer
+        x = layers.Reshape((num_features * 3,))(x)
+        x = layers.Dense(64, activation='gelu',
+                             kernel_regularizer=regularizers.l2(l2_reg))(x)
         x = layers.GaussianDropout(dropout_rate)(x)
 
     elif head_type == 'kan':
@@ -141,7 +154,7 @@ def build_transformer_model(
 
 
     else:
-        raise ValueError("head_type must be 'mlp' or 'rbf' or 'poly' or 'kan' or 'interaction'")
+        raise ValueError("head_type must be 'mlp' or 'rbf' or 'spline' or 'kan' or 'interaction'")
     if task == 'regression':
         outputs = layers.Dense(1, activation='linear')(x)
     elif task == 'classification':
