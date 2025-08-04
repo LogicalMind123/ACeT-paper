@@ -38,7 +38,7 @@ import scipy.io as sio
 from scipy.cluster.hierarchy import linkage, fcluster, dendrogram
 import seaborn as sns            # only used for pretty correlation heat‑map
 from typing import Dict
-
+from clinical.model import DenseKANRBF, build_transformer_model
 # ──────────────────────────────────────────────────────────────────────────────
 # 0. Jain‑et‑al. 2017 warning‑flag thresholds           
 # ──────────────────────────────────────────────────────────────────────────────
