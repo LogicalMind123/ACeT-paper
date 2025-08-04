@@ -61,7 +61,7 @@ def run_regression(args):
     feature_cols = train_mix.columns[:-1]
 
     # 3) set up CV & model heads
-    heads = [args.head_type] if args.head_type!='all' else ['mlp','rbf','linear','poly','spline','kan','fourier','interaction']
+    heads = [args.head_type] if args.head_type!='all' else ['mlp','rbf','spline','kan','interaction']
     kf = KFold(n_splits=args.n_splits, shuffle=True, random_state=args.seed)
 
     for head in heads:
@@ -168,7 +168,6 @@ def run_regression(args):
         # --- 4) ensemble‐predict & inverse‐transform ---
         preds_s = np.mean([mdl.predict(X_test).flatten() for mdl, _ in ens_models], axis=0)
         # NOTE: here we’re using the LAST fold’s sc_y; 
-        # for full correctness you might want to inverse‐transform each mdl’s preds with its own sc_y
         preds = ens_models[-1][1].inverse_transform(preds_s.reshape(-1,1)).flatten()
 
         # --- 5) final metrics ---
@@ -226,7 +225,7 @@ def parse_args():
     p.add_argument('--task', choices=['regression','classification'], required=True)
     p.add_argument('--train_file', required=True, help='Path to training CSV file')
     p.add_argument('--test_file',  required=True, help='Path to test CSV file')
-    p.add_argument('--head_type', choices=['mlp','rbf','poly','kan','interaction','all'], default='mlp')
+    p.add_argument('--head_type', choices=['mlp','rbf','spline','kan','interaction','all'], default='mlp')
     p.add_argument('--seed', type=int, default=0)
     p.add_argument('--n_splits', type=int, default=5)
     p.add_argument('--epochs', type=int, default=1000)
