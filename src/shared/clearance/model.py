@@ -64,7 +64,6 @@ def build_transformer_model(
     num_classes             = None,
     head_type               = 'mlp'
 ):
-    """Factory that produces a Transformer with one of nine possible heads."""
     inputs = layers.Input(shape=(num_features,))
     # ---- token-wise dense projection -------------------------------------------------
     tokens = [layers.Lambda(lambda z, i=i: tf.expand_dims(
