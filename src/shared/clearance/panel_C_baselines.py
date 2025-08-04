@@ -233,7 +233,7 @@ def parse_args():
     p.add_argument('--task', choices=['regression','classification'], required=True)
     p.add_argument('--train_file', required=True, help='Path to training CSV file')
     p.add_argument('--test_file',  required=True, help='Path to test CSV file')
-    p.add_argument('--head_type', choices=['mlp','rbf','poly','kan','interaction','all'], default='mlp')
+    p.add_argument('--head_type', choices=['mlp','rbf','spline','kan','interaction','all'], default='mlp')
     p.add_argument('--seed', type=int, default=0)
     p.add_argument('--n_splits', type=int, default=5)
     p.add_argument('--epochs', type=int, default=1000)
