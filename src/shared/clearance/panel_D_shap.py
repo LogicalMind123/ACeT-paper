@@ -21,7 +21,7 @@ import ImbalancedLearningRegression as iblr
 from tfkan.layers import DenseKAN
 import shap
 from scipy.io import savemat
-
+from clearance.model import DenseKANRBF, build_transformer_model
 
 # ------------------------------------------------------------------------------
 # 3) Regression Pipeline (uses train.csv and test.csv)
