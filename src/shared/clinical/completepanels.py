@@ -40,7 +40,7 @@ import seaborn as sns            # only used for pretty correlation heat‑map
 from typing import Dict
 
 # ──────────────────────────────────────────────────────────────────────────────
-# 0. Jain‑et‑al. 2017 warning‑flag thresholds            :contentReference[oaicite:1]{index=1}
+# 0. Jain‑et‑al. 2017 warning‑flag thresholds           
 # ──────────────────────────────────────────────────────────────────────────────
 JAIN_THRESH: Dict[str, Dict[str, float]] = {
     "PSR":        {">": 0.27},
@@ -74,7 +74,7 @@ def build_flags(df: pd.DataFrame) -> pd.DataFrame:
     return flags
 
 # ──────────────────────────────────────────────────────────────────────────────
-# 1.  **NEW**  Threshold‑helper utilities
+# 1.   Threshold‑helper utilities
 # ──────────────────────────────────────────────────────────────────────────────
 def youden_univariate_thresholds(X: pd.DataFrame,
                                  y: np.ndarray) -> pd.DataFrame:
@@ -163,8 +163,6 @@ def predict_and_cm(models, X, y_true):
     return bacc, cm, preds, probs
 
 
-
-
 # ------------------------------------------------------------------------------
 # ------------------ Classification Pipeline ------------------
 def run_classification(args):
@@ -211,7 +209,7 @@ def run_classification(args):
     num_features = X_train_scaled.shape[1]
 
     heads = [args.head_type] if args.head_type != 'all' else [
-        'mlp','rbf','linear','poly','spline','kan','fourier','interaction'
+        'mlp','rbf','poly','kan','interaction'
     ]
 
     best_head = None
