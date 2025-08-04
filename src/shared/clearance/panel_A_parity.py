@@ -46,6 +46,7 @@ def run_regression(args):
     #print("Synthetic data preview:\n", synthetic_data.head())
 
     train_mix = pd.concat([train, train, synthetic_data], ignore_index=True)
+    #train_mix = pd.concat([train, train, train, train], ignore_index=True) w/o synthetic data
 
     print("Original train shape:", train.shape)
     print("Synthetic data shape:", synthetic_data.shape)
