@@ -91,10 +91,23 @@ def build_transformer_model(
         x = DenseKANRBF(units=mlp_units[-1] if mlp_units else embed_dim,
                         grid_size=8, grid_range=(-1, 1),
                         basis_function='rbf', mlp_units=mlp_units)(x)
-    elif head_type=='poly':
-        square = layers.Lambda(lambda z: tf.square(z))(inputs)
-        x = layers.Concatenate()([inputs, square])
-        x = layers.Dense(64, activation='gelu', kernel_regularizer=regularizers.l2(l2_reg))(x)
+    elif head_type == 'spline':
+        # Cubic spline head with fixed knots at -1,0,1
+        def spline_basis(z):
+            # z: (batch, num_features)
+            knots = tf.constant([-1.0, 0.0, 1.0], dtype=z.dtype)        # shape (5,)
+            # expand to (batch, num_features, 1), subtract gives (batch, num_features, 3)
+            diff = tf.nn.relu(tf.expand_dims(z, -1) - knots)
+            # cubic basis
+            return tf.pow(diff, 3)                                      # (batch, num_features, 3)
+
+        # apply Lambda to get shape (batch, num_features, 3)
+        x = layers.Lambda(spline_basis)(inputs)
+        # now reshape to (batch, num_features * 3) so Dense can infer its input size
+        num_features = inputs.shape[-1]                                 # static integer
+        x = layers.Reshape((num_features * 3,))(x)
+        x = layers.Dense(64, activation='gelu',
+                             kernel_regularizer=regularizers.l2(l2_reg))(x)
     elif head_type == 'kan':
         from tfkan.layers import DenseKAN
         x = DenseKAN(units=mlp_units[-1] if mlp_units else embed_dim)(x)
