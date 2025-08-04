@@ -20,7 +20,7 @@ from verstack.stratified_continuous_split import scsplit
 import ImbalancedLearningRegression as iblr
 from tfkan.layers import DenseKAN
 from scipy.io import savemat
-
+from clearance.model import DenseKANRBF, build_transformer_model
 # ------------------------------------------------------------------------------
 # 3) Regression Pipeline (uses train.csv and test.csv)
 # ------------------------------------------------------------------------------
