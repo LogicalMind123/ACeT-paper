@@ -22,7 +22,7 @@ from tfkan.layers import DenseKAN
 from scipy.io import savemat
 from clearance.model import DenseKANRBF, build_transformer_model
 # ------------------------------------------------------------------------------
-# 3) Regression Pipeline (uses train.csv and test.csv)
+# 3) Regression Pipeline
 # ------------------------------------------------------------------------------
 
 def run_regression(args):
@@ -78,7 +78,7 @@ def run_regression(args):
         'RandomForest': {}
     }
 
-    # a) Transformer (KAN head) CV and test
+    # a) Transformer CV and test
     transformer_models = []
     for fold, (tr, vl) in enumerate(kf.split(X_all, y_all), 1):
         print(f"Fold {fold} (head={head})")
@@ -89,15 +89,15 @@ def run_regression(args):
         df_tr_clean = iblr.smote(data=df_tr, y=target_col, rel_coef=0.5)
         df_tr_clean = df_tr_clean.dropna() if df_tr_clean.isnull().values.any() else df_tr_clean
         df_tr_clean = df_tr_clean.loc[:, df_tr_clean.nunique() > 1]
-        # 3) Try SMOTE with a fallback
+        # 3) Try ENN with a fallback
         try:
            df_tr_bal = iblr.enn(data=df_tr_clean, y=target_col, rel_coef=0.5)
         except ValueError as e:
-           print(f"[Fold {fold}] SMOTE failed ({e}); retrying with rel_coef=0.25")
+           print(f"[Fold {fold}] ENN failed ({e}); retrying with rel_coef=0.25")
         try:
            df_tr_bal = iblr.enn(data=df_tr_clean, y=target_col, rel_coef=0.25)
         except ValueError as e2:
-           print(f"[Fold {fold}] SMOTE retry failed ({e2}); skipping SMOTE")
+           print(f"[Fold {fold}] ENN retry failed ({e2}); skipping SMOTE")
         df_tr_bal = df_tr_clean.copy()
         X_tr_bal = df_tr_bal.iloc[:, :-1].values
         y_tr_bal = df_tr_bal[target_col].values
@@ -223,7 +223,7 @@ def run_regression(args):
         'test_nrmse_all': np.array([test_metrics[m]['nrmse'] for m in ['Transformer','Ridge','SVR','RandomForest']]),
         'test_nmae_all':  np.array([test_metrics[m]['nmae'] for m in ['Transformer','Ridge','SVR','RandomForest']]),
     })
-    print("✔ Saved CV folds, test metrics, and normalized metrics to 'clearance_results_cv.mat'")
+    print("Saved CV folds, test metrics, and normalized metrics to 'clearance_results_cv.mat'")
 
 # ------------------------------------------------------------------------------
 # 5) Argparse & Main
