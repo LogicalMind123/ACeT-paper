@@ -29,7 +29,7 @@ from sdv.single_table import GaussianCopulaSynthesizer
 from viscosity.model import DenseKANRBF, build_transformer_model
 
 # ------------------------------------------------------------------------------
-# 3) Regression Pipeline (uses train.csv and test.csv)
+# 3) Regression Pipeline
 # ------------------------------------------------------------------------------
 def run_regression(args):
     print("=== Running Regression Task with Bootstrap Stratified Analysis ===")
