@@ -1,3 +1,8 @@
+"""
+python panels.py --task classification --train_file InternalCohort_112mAbs_train.csv --test_file InternalCohort_112mAbs_test.csv --external_file ExternalCohort_14mAbs.csv --status_col Updated.Status --head_type all 
+
+"""
+
 import os
 import random
 import argparse
