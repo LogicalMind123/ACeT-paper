@@ -38,6 +38,7 @@ import scipy.io as sio
 from scipy.cluster.hierarchy import linkage, fcluster, dendrogram
 import seaborn as sns           
 from typing import Dict
+from clinical.model import DenseKANRBF, build_transformer_model
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Jain‑et‑al. 2017 warning‑flag thresholds            
