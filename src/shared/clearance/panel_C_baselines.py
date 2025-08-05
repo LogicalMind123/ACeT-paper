@@ -1,3 +1,8 @@
+
+"""
+python panel_C_baselines.py --task regression --train_file clearance_train.csv --test_file clearance_test.csv --head_type rbf 
+
+"""
 import os
 import random
 import argparse
