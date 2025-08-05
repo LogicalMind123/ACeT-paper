@@ -25,7 +25,7 @@ from scipy.stats import gaussian_kde
 from clearance.model import DenseKANRBF, build_transformer_model
 
 # ------------------------------------------------------------------------------
-# 3) Regression Pipeline (uses train.csv and test.csv)
+# 3) Regression Pipeline 
 # ------------------------------------------------------------------------------
 
 def run_regression(args):
@@ -91,18 +91,17 @@ def run_regression(args):
             
             df_tr_clean = df_tr_clean.loc[:, df_tr_clean.nunique() > 1]
 
-             #3) Try SMOTE with a fallback
+             #3) Try ENN with a fallback
             try:
                df_tr_bal = iblr.enn(data=df_tr_clean, y=target_col, rel_coef=0.5)
             except ValueError as e:
-               print(f"[Fold {fold}] SMOTE failed ({e}); retrying with rel_coef=0.25")
+               print(f"[Fold {fold}] ENN failed ({e}); retrying with rel_coef=0.25")
             try:
                df_tr_bal = iblr.enn(data=df_tr_clean, y=target_col, rel_coef=0.25)
             except ValueError as e2:
-               print(f"[Fold {fold}] SMOTE retry failed ({e2}); skipping SMOTE")
+               print(f"[Fold {fold}] ENN retry failed ({e2}); skipping SMOTE")
             
             df_tr_bal = df_tr_clean.copy()
-            #df_tr_bal = df_tr.copy()
 
             X_tr_bal = df_tr_bal.iloc[:, :-1].values
             y_tr_bal = df_tr_bal[target_col].values
@@ -144,7 +143,7 @@ def run_regression(args):
 
             # --- 3f) record validation loss & model ---
             vloss = m.evaluate(X_all[vl], y_vl_s, verbose=0)
-            ens_models.append((m, sc_y))   # keep sc_y for each model if you want per‐fold inverse later
+            ens_models.append((m, sc_y))  
             val_losses.append(vloss)
 
             print(f"CV losses for {head}: {val_losses}")
@@ -168,8 +167,6 @@ def run_regression(args):
 
         # --- 4) ensemble‐predict & inverse‐transform ---
         preds_s = np.mean([mdl.predict(X_test).flatten() for mdl, _ in ens_models], axis=0)
-        # NOTE: here we’re using the LAST fold’s sc_y; 
-        # for full correctness you might want to inverse‐transform each mdl’s preds with its own sc_y
         preds = ens_models[-1][1].inverse_transform(preds_s.reshape(-1,1)).flatten()
 
         # --- 5) final metrics ---
@@ -186,7 +183,6 @@ def run_regression(args):
 
         # --------------------------------------------
         # Primary Panel: Raw‐Value Parity Plot with Density Coloring
-        # (saved to 'clearance_parity_loglog.png', but uses linear axes)
         # --------------------------------------------
 
         # Filter out any non‐finite values (just in case)
@@ -282,7 +278,6 @@ def run_regression(args):
 
         # --------------------------------------------
         # Secondary Panel (Inset): Cumulative Distribution of |Error|
-        # (saved to 'clearance_error_cdf.png')
         # --------------------------------------------
 
         # 1) Compute relative errors in percent
