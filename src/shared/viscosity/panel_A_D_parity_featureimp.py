@@ -1,4 +1,7 @@
+"""
+python panel_A_D_parity_featureimp.py --task regression --train_file antibodies_train.csv --test_file antibodies_test.csv --head_type all 
 
+"""
 import os
 import random
 import argparse
@@ -62,6 +65,9 @@ def run_regression(args):
     kf = KFold(n_splits=args.n_splits, shuffle=True, random_state=args.seed)
 
     for head in heads:
+        random.seed(args.seed)
+        np.random.seed(args.seed)
+        tf.keras.utils.set_random_seed(args.seed)
         print(f"--- Head = {head.upper()} ---")
         ens_models, val_losses = [], []
         cv_r2, cv_rmse, cv_mae, cv_spearman = [], [], [], []
