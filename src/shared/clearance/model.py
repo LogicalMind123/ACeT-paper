@@ -1,6 +1,6 @@
 
 # ------------------------------------------------------------------
-# 1)  DenseKANRBF   (identical in every original script)
+# 1)  DenseKANRBF 
 # ------------------------------------------------------------------
 class DenseKANRBF(layers.Layer):
     def __init__(self, units,
@@ -49,7 +49,7 @@ class DenseKANRBF(layers.Layer):
         return out + self.bias
 
 # ------------------------------------------------------------------
-# 2)  build_transformer_model   (identical in every original script)
+# 2)  build_transformer_model  
 # ------------------------------------------------------------------
 def build_transformer_model(
     num_features,
