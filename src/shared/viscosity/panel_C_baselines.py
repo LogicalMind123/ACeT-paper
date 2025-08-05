@@ -1,3 +1,6 @@
+"""
+python panel_C_baselines.py --task regression --train_file antibodies_train.csv --test_file antibodies_test.csv --head_type kan 
+"""
 import os
 import random
 import argparse
@@ -85,7 +88,6 @@ def run_regression(args):
     }
 
     # a) Transformer (KAN head) CV and test
-    #from your_transformer_builder import build_transformer_model
     transformer_models = []
     for fold, (tr, vl) in enumerate(kf.split(X_all, y_all), 1):
         print(f"Fold {fold} (head={head})")
