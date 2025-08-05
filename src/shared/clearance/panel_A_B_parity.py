@@ -1,4 +1,7 @@
+"""
+python panel_A_B_parity.py --task regression --train_file clearance_train.csv --test_file clearance_test.csv --head_type all 
 
+"""
 import os
 import random
 import argparse
