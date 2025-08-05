@@ -26,7 +26,7 @@ from sklearn.base import BaseEstimator, RegressorMixin
 
 from viscosity.model import DenseKANRBF, build_transformer_model
 # ------------------------------------------------------------------------------
-# 3) Regression Pipeline (uses train.csv and test.csv)
+# 3) Regression Pipeline
 # ------------------------------------------------------------------------------
 def run_regression(args):
     print("=== Running Regression Task ===")
@@ -161,8 +161,6 @@ def run_regression(args):
 
         # --- 4) ensemble‐predict & inverse‐transform ---
         preds_s = np.mean([mdl.predict(X_test).flatten() for mdl, _ in ens_models], axis=0)
-        # NOTE: here we’re using the LAST fold’s sc_y; 
-        # for full correctness you might want to inverse‐transform each mdl’s preds with its own sc_y
         preds = ens_models[-1][1].inverse_transform(preds_s.reshape(-1,1)).flatten()
 
         # --- 5) final metrics ---
@@ -240,21 +238,7 @@ def run_regression(args):
         plt.close()
         print("Saved feature importance plot 'viscosity_feature_importance.png'.")
 
-        # SHAP values (explainability)
-        explainer = shap.KernelExplainer(ensemble_regressor.predict, X_test[:min(100, len(X_test))])
-        shap_values = explainer.shap_values(X_test, nsamples=100)
-
-        shap.summary_plot(shap_values, X_test, feature_names=feature_cols, show=False)
-        plt.savefig('shap_summary_viscosity.png', bbox_inches='tight')
-        plt.close()
-        print("Saved SHAP summary plot 'shap_summary_viscosity.png'.")
-
-        shap.summary_plot(shap_values, X_test, feature_names=feature_cols, plot_type='bar', show=False)
-        plt.savefig('shap_bar_viscosity.png', bbox_inches='tight')
-        plt.close()
-        print("Saved SHAP bar plot 'shap_bar_viscosity.png'.")
-
-        # Export MATLAB workspace variables (fully matching codeviso.txt structure)
+        # Export MATLAB workspace variables 
         matlab_vars = {
             'dataMatrix': np.hstack((X_test, trues.reshape(-1,1), preds.reshape(-1,1))),
             'varNames': np.array(list(feature_cols) + ['True_Viscosity', 'Predicted_Viscosity'], dtype=object),
@@ -267,10 +251,6 @@ def run_regression(args):
             'mae_transformer': np.array([[mae]]),
             'spearman_transformer': np.array([[spearman_coef]])
         }
-
-        # Add these two lines:
-        matlab_vars['shapValues']     = shap_values       # shape (n_test, n_features)
-        matlab_vars['shapImportance'] = np.abs(shap_values).mean(axis=0).reshape(-1,1)
 
         # Finally save:
         savemat('viscosity_results.mat', matlab_vars)
