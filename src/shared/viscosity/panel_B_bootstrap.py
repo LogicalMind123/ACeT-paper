@@ -29,7 +29,7 @@ from sklearn.base import BaseEstimator, RegressorMixin
 from sdv.metadata import SingleTableMetadata
 from sdv.single_table import GaussianCopulaSynthesizer
 
-from model import DenseKANRBF, build_transformer_model
+from viscosity.model import DenseKANRBF, build_transformer_model
 
 # ------------------------------------------------------------------------------
 # 3) Regression Pipeline
