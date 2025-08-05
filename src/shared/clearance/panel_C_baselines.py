@@ -97,7 +97,7 @@ def run_regression(args):
         try:
            df_tr_bal = iblr.enn(data=df_tr_clean, y=target_col, rel_coef=0.25)
         except ValueError as e2:
-           print(f"[Fold {fold}] ENN retry failed ({e2}); skipping SMOTE")
+           print(f"[Fold {fold}] ENN retry failed ({e2}); skipping ENN")
         df_tr_bal = df_tr_clean.copy()
         X_tr_bal = df_tr_bal.iloc[:, :-1].values
         y_tr_bal = df_tr_bal[target_col].values
