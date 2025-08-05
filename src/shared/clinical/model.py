@@ -1,6 +1,6 @@
 
 # ------------------------------------------------------------------------------
-# 1) DenseKANRBF Layer Definition (unchanged)
+# 1) DenseKANRBF Layer Definition
 # ------------------------------------------------------------------------------
 class DenseKANRBF(layers.Layer):
     def __init__(self, units,
@@ -62,7 +62,7 @@ class DenseKANRBF(layers.Layer):
         return out
 
 # ------------------------------------------------------------------------------
-# 2) Transformer Builder with Switchable Head (unchanged)
+# 2) Transformer Builder with Switchable Head
 # ------------------------------------------------------------------------------
 def build_transformer_model(
     num_features,
