@@ -1,4 +1,7 @@
+"""
+python panel_B_bootstrap.py --task regression --train_file antibodies_train.csv --test_file antibodies_test.csv --head_type kan 
 
+"""
 import os
 import random
 import argparse
@@ -26,7 +29,7 @@ from sklearn.base import BaseEstimator, RegressorMixin
 from sdv.metadata import SingleTableMetadata
 from sdv.single_table import GaussianCopulaSynthesizer
 
-from viscosity.model import DenseKANRBF, build_transformer_model
+from model import DenseKANRBF, build_transformer_model
 
 # ------------------------------------------------------------------------------
 # 3) Regression Pipeline
@@ -56,6 +59,9 @@ def run_regression(args):
     kf = KFold(n_splits=args.n_splits, shuffle=True, random_state=args.seed)
 
     for head in heads:
+        random.seed(args.seed)
+        np.random.seed(args.seed)
+        tf.keras.utils.set_random_seed(args.seed)
         ens_models = []
         for fold, (tr, vl) in enumerate(kf.split(X_all, y_all), 1):
             X_tr, y_tr = X_all[tr], y_all[tr]
