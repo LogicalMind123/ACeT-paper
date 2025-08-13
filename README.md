@@ -4,13 +4,13 @@ This repository contains the code and small example data to reproduce the analys
 
 ---
 
-1) System requirements
+# 1) System requirements
 - OS tested: Windows 11 Pro (23H2)
 - Python: 3.11.7
 - Dependencies (and versions): see [requirements.txt](./requirements.txt)
 - Hardware: Runs on a normal desktop/laptop (CPU). GPU optional for speed; no special hardware required.
 
-2) Installation guide
+# 2) Installation guide
 # Create & activate an isolated environment (recommended)
 python -m venv .venv
 source .venv/bin/activate      # Windows: .venv\Scripts\activate
@@ -21,7 +21,7 @@ pip install -r requirements.txt
 
 Typical install time on a "normal" desktop: ~ 15 minutes on common broadband.
 
-3) Demo (small data)
+# 3) Demo (small data)
 This demo uses the small sample CSVs included in the repo. It generates example figures/metrics.
 Run: bash run.sh demo
 
@@ -30,7 +30,7 @@ Expected output: figures and CSVs under results/demo/ (e.g., viscosity_pred_vs_t
 Expected runtime on a normal desktop (CPU): ~2-5 minutes.
 
 
-4) Instructions for use (full reproduction)
+# 4) Instructions for use (full reproduction)
 Reproduce each analysis:
 
 # Viscosity
