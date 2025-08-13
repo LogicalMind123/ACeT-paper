@@ -109,7 +109,7 @@ case "$TASK" in
     python src/shared/clinical/panels.py \
       --train_file src/shared/clinical/InternalCohort_112mAbs_train.csv \
       --test_file  src/shared/clinical/InternalCohort_112mAbs_test.csv \
-      --external_file ExternalCohort_14mAbs.csv \
+      --external_file src/shared/clinical/ExternalCohort_14mAbs.csv \
       --status_col Updated.Status \
       --task classification \
       --head_type mlp
@@ -118,9 +118,6 @@ case "$TASK" in
     files=(cm_*.png Table_S1_thresholds.csv)
     ((${#files[@]})) && mv -f "${files[@]}" results/clinical/ || echo "[warn] No clinical outputs to move"
     ;;
-
-echo ""
-read -p "Press Enter to close..."
 
   # ------------------------------------------------------------
   # Run everything
