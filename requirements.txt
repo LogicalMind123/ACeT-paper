@@ -16,7 +16,7 @@ Keras==2.15.0
 
 # Imbalanced learning (classification & regression)
 imbalanced-learn==0.12.2
-ImbalancedLearningRegression==0.0.2   # if pip package exists for your import
+ImbalancedLearningRegression==0.0.2   
 
 # Other libraries used in code
 sdv==1.17.4
