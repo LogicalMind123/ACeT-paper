@@ -135,3 +135,6 @@ case "$TASK" in
 esac
 
 echo "[run] Done. See results/"
+
+echo ""
+read -p "Press Enter to close..."
