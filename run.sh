@@ -68,7 +68,7 @@ case "$TASK" in
       --external_file ExternalCohort_14mAbs.csv
       --status_col Updated.Status \
       --task classification \
-      --head_type all
+      --head_type mlp
     ;;
 
   all)
