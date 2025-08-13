@@ -233,16 +233,16 @@ def run_regression(args):
         sorted_idx = np.argsort(feature_importances)[::-1]
 
         # Feature Importance plot
-        plt.figure(figsize=(10,6))
-        plt.bar(np.array(feature_cols)[sorted_idx], feature_importances[sorted_idx], color='teal')
-        plt.xticks(rotation=45, ha='right')
-        plt.xlabel("Features", fontsize=14)
-        plt.ylabel("Importance (Mean decrease in R²)", fontsize=14)
-        plt.title("Permutation Feature Importance", fontsize=16)
-        plt.tight_layout()
-        plt.savefig('viscosity_feature_importance.png')
-        plt.close()
-        print("Saved feature importance plot 'viscosity_feature_importance.png'.")
+        #plt.figure(figsize=(10,6))
+        #plt.bar(np.array(feature_cols)[sorted_idx], feature_importances[sorted_idx], color='teal')
+        #plt.xticks(rotation=45, ha='right')
+        #plt.xlabel("Features", fontsize=14)
+        #plt.ylabel("Importance (Mean decrease in R²)", fontsize=14)
+        #plt.title("Permutation Feature Importance", fontsize=16)
+        #plt.tight_layout()
+        #plt.savefig('viscosity_feature_importance.png')
+        #plt.close()
+        #print("Saved feature importance plot 'viscosity_feature_importance.png'.")
 
         # Export MATLAB workspace variables 
         matlab_vars = {
