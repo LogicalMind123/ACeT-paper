@@ -56,7 +56,9 @@ Overall pipeline and figure-generation logic lives in:
 Each panel script trains/evaluates and writes plots/tables to results/<task>/.
 
 
-# Quick start (full setup & run)
+## Quick start (full setup & run)
+
+```bash
 git clone https://github.com/LogicalMind123/AceT-paper.git
 cd AceT-paper
 
@@ -71,6 +73,11 @@ pip install -r requirements.txt
 # Run the demo (clearance parity)
 bash run.sh demo
 ls -la results/demo
+
+# Run all analyses (full reproduction)
+bash run.sh all
+# Check results in: results/viscosity/, results/clearance/, results/clinical/
+
 
 # Run all analyses (full reproduction)
 bash run.sh all
