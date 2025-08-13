@@ -17,7 +17,7 @@ case "$TASK" in
   demo)
     mkdir -p results/demo
     export MPLBACKEND=Agg
-    python src/shared/viscosity/panel_A_D_parity_featureimp.py \
+    python src/shared/viscosity/panel_C_baselines.py \
       --train_file src/shared/viscosity/antibodies_train.csv \
       --test_file  src/shared/viscosity/antibodies_test.csv \
       --task regression \
