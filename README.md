@@ -77,7 +77,6 @@ pip install -r requirements.txt
 
 # Run the demo (clearance parity)
 bash run.sh demo
-ls -la results/demo
 
 # Run all analyses (full reproduction)
 bash run.sh all
