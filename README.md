@@ -12,14 +12,6 @@ This repository contains the code and small example data to reproduce the analys
 
 ## 2) Installation guide
 ```bash
-python -m venv .venv
-source .venv/bin/activate      # Windows: .venv\Scripts\activate
-pip install --upgrade pip
-pip install -r requirements.txt
-```
-
-# Install dependencies
-```bash
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
@@ -66,10 +58,6 @@ Each panel script trains/evaluates and writes plots/tables to results/<task>/.
 ```bash
 git clone https://github.com/LogicalMind123/ACeT-paper.git
 cd ACeT-paper
-
-# Create & activate a virtual environment
-python -m venv .venv
-source .venv/bin/activate      # Windows: .venv\Scripts\activate
 
 # Install dependencies
 pip install --upgrade pip
