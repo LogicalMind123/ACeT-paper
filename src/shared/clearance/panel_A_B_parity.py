@@ -25,7 +25,7 @@ import ImbalancedLearningRegression as iblr
 from tfkan.layers import DenseKAN
 from scipy.io import savemat
 from scipy.stats import gaussian_kde
-from clearance.model import DenseKANRBF, build_transformer_model
+from model import DenseKANRBF, build_transformer_model
 
 # ------------------------------------------------------------------------------
 # 3) Regression Pipeline 
