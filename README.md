@@ -10,10 +10,13 @@ This repository contains the code and small example data to reproduce the analys
 - Dependencies (and versions): see [requirements.txt](./requirements.txt)
 - Hardware: Runs on a normal desktop/laptop (CPU). GPU optional for speed; no special hardware required.
 
-# 2) Installation guide
-# Create & activate an isolated environment (recommended):
+## 2) Installation guide
+```bash
 python -m venv .venv
 source .venv/bin/activate      # Windows: .venv\Scripts\activate
+pip install --upgrade pip
+pip install -r requirements.txt
+```bash
 
 # Install dependencies
 pip install --upgrade pip
