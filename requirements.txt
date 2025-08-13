@@ -2,7 +2,7 @@
 numpy==1.23.5
 pandas==2.2.2
 scikit-learn==1.4.1.post1
-scipy==1.15.2
+scipy==1.15.2   # <= use a widely available SciPy==1.11.4 if not available; 1.15.2 may not exist on all wheels
 pyyaml==6.0.1
 
 # Plotting / explainability
@@ -12,7 +12,7 @@ shap==0.45.0
 
 # Deep learning
 tensorflow==2.15.0
-Keras==2.15.0
+keras==2.15.0
 
 # Imbalanced learning (classification & regression)
 imbalanced-learn==0.12.2
