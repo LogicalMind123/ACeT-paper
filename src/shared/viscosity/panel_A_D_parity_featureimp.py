@@ -27,7 +27,7 @@ import shap
 from scipy.io import savemat
 from sklearn.base import BaseEstimator, RegressorMixin
 
-from viscosity.model import DenseKANRBF, build_transformer_model
+from model import DenseKANRBF, build_transformer_model
 # ------------------------------------------------------------------------------
 # 3) Regression Pipeline
 # ------------------------------------------------------------------------------
