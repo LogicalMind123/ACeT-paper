@@ -11,7 +11,7 @@ This repository contains the code and small example data to reproduce the analys
 - Hardware: Runs on a normal desktop/laptop (CPU). GPU optional for speed; no special hardware required.
 
 # 2) Installation guide
-# Create & activate an isolated environment (recommended)
+**Create & activate an isolated environment (recommended):**
 python -m venv .venv
 source .venv/bin/activate      # Windows: .venv\Scripts\activate
 
