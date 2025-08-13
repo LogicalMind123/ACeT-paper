@@ -56,4 +56,4 @@ Overall pipeline and figure-generation logic lives in:
 Each panel script trains/evaluates and writes plots/tables to results/<task>/.
 
 
-
+# Quick start (full setup & run)
