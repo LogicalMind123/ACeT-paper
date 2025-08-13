@@ -163,13 +163,6 @@ def run_regression(args):
             coef, _ = spearmanr(true_vl, preds_vl)
             cv_spearman.append(coef)
 
-        # print aggregated CV metrics
-        print(f"{head.upper()} CV metrics:")
-        print(f"  R²       = {np.mean(cv_r2):.3f} ± {np.std(cv_r2):.3f}")
-        print(f"  RMSE     = {np.mean(cv_rmse):.3f} ± {np.std(cv_rmse):.3f}")
-        print(f"  MAE      = {np.mean(cv_mae):.3f} ± {np.std(cv_mae):.3f}")
-        print(f"  Spearman = {np.mean(cv_spearman):.3f} ± {np.std(cv_spearman):.3f}\n")
-
         # --- 4) ensemble‐predict & inverse‐transform ---
         preds_s = np.mean([mdl.predict(X_test).flatten() for mdl, _ in ens_models], axis=0)
         preds = ens_models[-1][1].inverse_transform(preds_s.reshape(-1,1)).flatten()
