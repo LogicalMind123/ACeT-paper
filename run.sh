@@ -119,6 +119,9 @@ case "$TASK" in
     ((${#files[@]})) && mv -f "${files[@]}" results/clinical/ || echo "[warn] No clinical outputs to move"
     ;;
 
+echo ""
+read -p "Press Enter to close..."
+
   # ------------------------------------------------------------
   # Run everything
   # ------------------------------------------------------------
