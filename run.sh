@@ -16,17 +16,25 @@ mkdir -p results
 case "$TASK" in
   demo)
     mkdir -p results/demo
+    export MPLBACKEND=Agg
     python src/shared/viscosity/panel_A_D_parity_featureimp.py \
       --train_file src/shared/viscosity/antibodies_train.csv \
       --test_file  src/shared/viscosity/antibodies_test.csv \
       --task regression \
       --head_type kan
-    # collect likely outputs from viscosity demo
-    mv -f viscosity_* results/demo/ 2>/dev/null || true
+    shopt -s nullglob
+    files=(viscosity_*)
+    if ((${#files[@]})); then
+      mv -f "${files[@]}" results/demo/
+      echo "[run] Moved ${#files[@]} files to results/demo/"
+    else
+      echo "[warn] No files found matching viscosity_*"
+    fi
     ;;
 
-  viscosity)     # run all viscosity panels; ensure each script writes to /results/viscosity/
+  viscosity)
     mkdir -p results/viscosity
+    export MPLBACKEND=Agg
     python src/shared/viscosity/panel_A_D_parity_featureimp.py \
       --train_file src/shared/viscosity/antibodies_train.csv \
       --test_file  src/shared/viscosity/antibodies_test.csv \
@@ -42,11 +50,14 @@ case "$TASK" in
       --test_file  src/shared/viscosity/antibodies_test.csv \
       --task regression \
       --head_type kan
-    mv -f viscosity_* results/viscosity/ 2>/dev/null || true
+    shopt -s nullglob
+    files=(viscosity_*)
+    ((${#files[@]})) && mv -f "${files[@]}" results/viscosity/ || echo "[warn] No viscosity_* files to move"
     ;;
 
-  clearance)  # ensure these scripts save outputs under results/clearance/
+  clearance)
     mkdir -p results/clearance
+    export MPLBACKEND=Agg
     python src/shared/clearance/panel_A_B_parity.py \
       --train_file src/shared/clearance/clearance_train.csv \
       --test_file  src/shared/clearance/clearance_test.csv \
@@ -62,19 +73,24 @@ case "$TASK" in
       --test_file  src/shared/clearance/clearance_test.csv \
       --task regression \
       --head_type rbf
-    mv -f clearance_* results/clearance/ 2>/dev/null || true
+    shopt -s nullglob
+    files=(clearance_*)
+    ((${#files[@]})) && mv -f "${files[@]}" results/clearance/ || echo "[warn] No clearance_* files to move"
     ;;
 
   clinical)
     mkdir -p results/clinical
+    export MPLBACKEND=Agg
     python src/shared/clinical/panels.py \
       --train_file src/shared/clinical/InternalCohort_112mAbs_train.csv \
       --test_file  src/shared/clinical/InternalCohort_112mAbs_test.csv \
-      --external_file ExternalCohort_14mAbs.csv
+      --external_file ExternalCohort_14mAbs.csv \
       --status_col Updated.Status \
       --task classification \
       --head_type mlp
-    mv -f cm_*.png Table_S1_thresholds.csv results/clinical/ 2>/dev/null || true
+    shopt -s nullglob
+    files=(cm_*.png Table_S1_thresholds.csv)
+    ((${#files[@]})) && mv -f "${files[@]}" results/clinical/ || echo "[warn] No clinical outputs to move"
     ;;
 
   all)
