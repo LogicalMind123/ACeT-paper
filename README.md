@@ -1,4 +1,4 @@
-# AceT: Transformer models for mAb viscosity, PK, and regulatory success
+# AceT: Transformer model for mAb viscosity, PK, and regulatory success
 
 This repository contains the code and small example data to reproduce the analyses/figures in our NBME submission.
 
