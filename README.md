@@ -60,18 +60,18 @@ Each panel script trains/evaluates and writes plots/tables to results/<task>/.
 git clone https://github.com/LogicalMind123/AceT-paper.git
 cd AceT-paper
 
-**Create & activate a virtual environment
+# Create & activate a virtual environment
 python -m venv .venv
 source .venv/bin/activate      # Windows: .venv\Scripts\activate
 
-**Install dependencies
+# Install dependencies
 pip install --upgrade pip
 pip install -r requirements.txt
 
-**Run the demo (clearance parity)
+# Run the demo (clearance parity)
 bash run.sh demo
 ls -la results/demo
 
-**Run all analyses (full reproduction)
+# Run all analyses (full reproduction)
 bash run.sh all
----Check results in: results/viscosity/, results/clearance/, results/clinical/
+# Check results in: results/viscosity/, results/clearance/, results/clinical/
