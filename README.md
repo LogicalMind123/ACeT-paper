@@ -64,8 +64,8 @@ Each panel script trains/evaluates and writes plots/tables to results/<task>/.
 ## Quick start (full setup & run)
 
 ```bash
-git clone https://github.com/LogicalMind123/AceT-paper.git
-cd AceT-paper
+git clone https://github.com/LogicalMind123/ACeT-paper.git
+cd ACeT-paper
 
 # Create & activate a virtual environment
 python -m venv .venv
@@ -82,9 +82,5 @@ ls -la results/demo
 # Run all analyses (full reproduction)
 bash run.sh all
 # Check results in: results/viscosity/, results/clearance/, results/clinical/
-
-
-# Run all analyses (full reproduction)
-bash run.sh all
-# Check results in: results/viscosity/, results/clearance/, results/clinical/
+```
 
