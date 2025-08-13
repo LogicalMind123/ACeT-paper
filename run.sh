@@ -17,11 +17,11 @@ case "$TASK" in
   demo)
     mkdir -p results/demo
     export MPLBACKEND=Agg
-    python src/shared/viscosity/panel_C_baselines.py \
-      --train_file src/shared/viscosity/antibodies_train.csv \
-      --test_file  src/shared/viscosity/antibodies_test.csv \
+    python src/shared/clearance/panel_A_B_parity.py \
+      --train_file src/shared/clearance/clearance_train.csv \
+      --test_file  src/shared/clearance/clearance_test.csv \
       --task regression \
-      --head_type kan
+      --head_type rbf
     shopt -s nullglob
     files=(viscosity_*)
     if ((${#files[@]})); then
