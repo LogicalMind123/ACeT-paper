@@ -17,20 +17,26 @@ case "$TASK" in
   demo)
     mkdir -p results/demo
     export MPLBACKEND=Agg
+
+    # Demo = clearance parity (fast, small data)
     python src/shared/clearance/panel_A_B_parity.py \
       --train_file src/shared/clearance/clearance_train.csv \
       --test_file  src/shared/clearance/clearance_test.csv \
       --task regression \
       --head_type rbf
+
+    # Safely collect demo artifacts (use clearance_* pattern)
     shopt -s nullglob
-    files=(viscosity_*)
+    files=(clearance_*)
     if ((${#files[@]})); then
       mv -f "${files[@]}" results/demo/
       echo "[run] Moved ${#files[@]} files to results/demo/"
     else
-      echo "[warn] No files found matching viscosity_*"
+      echo "[warn] No files found matching clearance_*"
+      echo "[hint] If your script outputs differently named files, switch the pattern above."
     fi
     ;;
+
 
   viscosity)
     mkdir -p results/viscosity
