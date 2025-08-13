@@ -1,0 +1,23 @@
+# Core
+numpy==1.23.5
+pandas==2.2.2
+scikit-learn==1.4.1.post1
+scipy==1.15.2
+pyyaml==6.0.1
+
+# Plotting / explainability
+matplotlib==3.9.2
+seaborn==0.13.2
+shap==0.45.0
+
+# Deep learning
+tensorflow==2.15.0
+Keras==2.15.0
+
+# Imbalanced learning (classification & regression)
+imbalanced-learn==0.12.2
+ImbalancedLearningRegression==0.0.2   # if pip package exists for your import
+
+# Other libraries used in code
+sdv==1.17.4
+tfkan==0.1.0
